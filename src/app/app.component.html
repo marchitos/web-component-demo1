@@ -24,7 +24,8 @@
     </div>
     <div style="position: absolute; z-index: 2;left: 3px;right: 3px;bottom: 3px;top: 3px;"
          *ngIf="appState[contact.id].onOffer">
-      <vvc-media-upgrade [offer]="appState[contact.id].lastOffer"
+      <vvc-media-upgrade [user]="{ nickname: 'Marco' }"
+                          [offer]="appState[contact.id].lastOffer"
                          (decline)="declineOffer($event, contact.id)"
                          (accept)="acceptOffer($event, contact.id)"></vvc-media-upgrade>
     </div>

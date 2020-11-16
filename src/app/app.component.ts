@@ -18,8 +18,6 @@ export class AppComponent implements OnInit {
   @ViewChild('adCore', {static: false}) adCore: ElementRef;
   title = 'Infocert';
   uiLoaded = false;
-  mediaOffer;
-  showUpgradeOffer = false;
 
   agent;
   jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbGVzc2FuZHJvIiwiZXhwIjoxNjA2MTQ5MTU2fQ.9KnxtyD8LHhJRqyq5HJH01XQxYGpO_W6S_ShEjMmliY';
@@ -142,9 +140,6 @@ export class AppComponent implements OnInit {
             lastOffer: evt.detail.data
           };
           console.log('currentCustomerMap', this.appState[contactId]);
-          break;
-        case 'mediachange':
-          this.showUpgradeOffer = false;
           break;
         default:
           console.log('VVC-WC', ev);
