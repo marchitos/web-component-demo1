@@ -1,3 +1,10 @@
 <div id="dashboard">
   start here {{title}}
 </div>
+
+<vvc-ad-core *ngIf="jwt"
+             world="tevez"
+             acct="marchitos"
+             [jwt]="jwt"
+             (vvcEvents)="vivochaEvent($event)"
+             version="1"></vvc-ad-core>
