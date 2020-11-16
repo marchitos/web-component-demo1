@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   @ViewChild('adCore', {static: false}) adCore: ElementRef;
   title = 'Infocert';
   uiLoaded = false;
-
+  selectedContactId;
   agent;
   jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbGVzc2FuZHJvIiwiZXhwIjoxNjA2MTQ5MTU2fQ.9KnxtyD8LHhJRqyq5HJH01XQxYGpO_W6S_ShEjMmliY';
   appState: {[key: string]: LocalContact} = {};
@@ -120,6 +120,7 @@ export class AppComponent implements OnInit {
         case VvcEventType.ASSIGNED: {
           console.log('ASSIGNED', ev);
           const contactId = ev.contactId;
+          this.selectedContactId = contactId;
           this.onAssigned(contactId);
           break;
         }
@@ -177,5 +178,37 @@ export class AppComponent implements OnInit {
     console.log('should decline offer', offer, customerId);
     this.adCore.nativeElement.sendEvent({ type: 'declineOffer', contactId: this.appState[customerId].id });
     this.appState[customerId] = {...this.appState[customerId], onOffer: false};
+  }
+
+
+  mute() {
+    const id = this.appState[this.selectedContactId].id;
+    if (id) {
+      this.adCore.nativeElement.sendEvent({type: 'muteLocalAudio', contactId: id});
+    }
+  }
+  unmute() {
+    const id = this.appState[this.selectedContactId].id;
+    if (id) {
+      this.adCore.nativeElement.sendEvent({ type: 'unmuteLocalAudio', contactId: id });
+    }
+  }
+  addLocalVideo() {
+    const id = this.appState[this.selectedContactId].id;
+    if (id) {
+      this.adCore.nativeElement.sendEvent({ type: 'addLocalVideo', contactId: id });
+    }
+  }
+  removeLocalVideo() {
+    const id = this.appState[this.selectedContactId].id;
+    if (id) {
+      this.adCore.nativeElement.sendEvent({ type: 'removeLocalVideo', contactId: id });
+    }
+  }
+  closeContact() {
+    const id = this.appState[this.selectedContactId].id;
+    if (id) {
+      this.adCore.nativeElement.sendEvent({ type: 'closeContact', data: id });
+    }
   }
 }

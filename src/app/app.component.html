@@ -6,6 +6,12 @@
   <div *ngIf="agent">
     <!--<vvc-avatar [url]="agent.avatar" size="large"></vvc-avatar>-->
     <vvc-avatar [name]="agent.firstname + ' ' + agent.lastname" size="large"></vvc-avatar>
+
+    <button (click)="closeContact()">close contact</button>
+    <button (click)="mute()">mute</button>
+    <button (click)="unmute()">unmute</button>
+    <button (click)="removeLocalVideo()">remove local video</button>
+    <button (click)="addLocalVideo()">add local video</button>
   </div>
 
   <div *ngFor="let contact of getPendingContacts()">
@@ -18,6 +24,13 @@
   <div *ngFor="let contact of getAssignedContacts()">
     <div style="border: 1px solid red; width: 200px; height: 200px">
       <vvc-video-vivocha [contactId]="contact.id"></vvc-video-vivocha>
+
+      <div style="border: 3px solid palegreen">
+        <vvc-video-vivocha-remote [contactId]="contact.id"></vvc-video-vivocha-remote>
+      </div>
+      <div style="border: 3px solid coral">
+        <vvc-video-vivocha-local [contactId]="contact.id"></vvc-video-vivocha-local>
+      </div>
     </div>
     <div style="border: 1px solid black; width: 300px; height: 650px">
       <vvc-chat-vivocha [contactId]="contact.id"></vvc-chat-vivocha>
