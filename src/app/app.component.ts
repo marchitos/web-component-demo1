@@ -5,6 +5,8 @@ export interface LocalContact {
   id: string;
   pending?: boolean;
   contact?: any;
+  onOffer?: boolean;
+  lastOffer: {}
 }
 
 @Component({
@@ -15,6 +17,10 @@ export interface LocalContact {
 export class AppComponent implements OnInit {
   @ViewChild('adCore', {static: false}) adCore: ElementRef;
   title = 'Infocert';
+  uiLoaded = false;
+  mediaOffer;
+  showUpgradeOffer = false;
+
   agent;
   jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbGVzc2FuZHJvIiwiZXhwIjoxNjA2MTQ5MTU2fQ.9KnxtyD8LHhJRqyq5HJH01XQxYGpO_W6S_ShEjMmliY';
   appState: {[key: string]: LocalContact} = {};
@@ -23,7 +29,7 @@ export class AppComponent implements OnInit {
     {
       id: 'AD.ISWRITING',
       values: {
-        it: { value: '{{user}} sta scrivendo', state: 'final' },
+        it: { value: '{{user}} sta scrivendo {{nickname}}', state: 'final' },
         en: { value: '{{user}} is writing...', state: 'final' } } },
     {
       id: 'AD.SEND_PH',
@@ -103,7 +109,7 @@ export class AppComponent implements OnInit {
           const contactId = ev.data.contact.id;
           const contact = ev.data.contact;
           if (!this.appState[contactId]) {
-            this.appState[contactId] = {id: contactId, pending: true, contact};
+            this.appState[contactId] = {id: contactId, pending: true, contact, lastOffer: {}};
           }
           break;
         }
@@ -123,6 +129,23 @@ export class AppComponent implements OnInit {
           this.adCore.nativeElement.setTranslationsMap(this.txl8Map, 'it', 'en');
           break;
         }
+        case VvcEventType.TRANSLATION_LOADED: {
+          this.uiLoaded = true;
+          break;
+        }
+        case VvcEventType.MEDIAOFFER_CONFIRM:
+          console.log('CONFIRM?', evt.detail);
+          const contactId = evt.detail.contactId;
+          this.appState[contactId] = {
+            ...this.appState[contactId],
+            onOffer: true,
+            lastOffer: evt.detail.data
+          };
+          console.log('currentCustomerMap', this.appState[contactId]);
+          break;
+        case 'mediachange':
+          this.showUpgradeOffer = false;
+          break;
         default:
           console.log('VVC-WC', ev);
           break;
@@ -149,5 +172,15 @@ export class AppComponent implements OnInit {
     return Object.keys(this.appState)
       .map( k => this.appState[k])
       .filter((elem: LocalContact) => !elem.pending);
+  }
+  acceptOffer(offer, customerId) {
+    console.log('should accept offer', offer, customerId);
+    this.adCore.nativeElement.sendEvent({ type: 'acceptOffer', contactId: this.appState[customerId].id, data: offer });
+    this.appState[customerId] = {...this.appState[customerId], onOffer: false};
+  }
+  declineOffer(offer, customerId) {
+    console.log('should decline offer', offer, customerId);
+    this.adCore.nativeElement.sendEvent({ type: 'declineOffer', contactId: this.appState[customerId].id });
+    this.appState[customerId] = {...this.appState[customerId], onOffer: false};
   }
 }

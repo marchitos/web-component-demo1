@@ -1,26 +1,35 @@
-<div id="dashboard">
-  start here {{title}}
-</div>
-
-<div *ngIf="agent">
-  <!--<vvc-avatar [url]="agent.avatar" size="large"></vvc-avatar>-->
-  <vvc-avatar [name]="agent.firstname + ' ' + agent.lastname" size="large"></vvc-avatar>
-</div>
-
-<div *ngFor="let contact of getPendingContacts()">
-  <div>
-    <span>{{contact.id}}</span> <button (click)="assignContact(contact.id)">assign</button>
+<div *ngIf="uiLoaded">
+  <div id="dashboard">
+    start here {{title}}
   </div>
 
-</div>
-
-<div *ngFor="let contact of getAssignedContacts()">
-  <div style="border: 1px solid black; width: 300px; height: 650px">
-    <vvc-chat-vivocha [contactId]="contact.id"></vvc-chat-vivocha>
+  <div *ngIf="agent">
+    <!--<vvc-avatar [url]="agent.avatar" size="large"></vvc-avatar>-->
+    <vvc-avatar [name]="agent.firstname + ' ' + agent.lastname" size="large"></vvc-avatar>
   </div>
 
-</div>
+  <div *ngFor="let contact of getPendingContacts()">
+    <div>
+      <span>{{contact.id}}</span> <button (click)="assignContact(contact.id)">assign</button>
+    </div>
 
+  </div>
+
+  <div *ngFor="let contact of getAssignedContacts()">
+    <div style="border: 1px solid red; width: 200px; height: 200px">
+      <vvc-video-vivocha [contactId]="contact.id"></vvc-video-vivocha>
+    </div>
+    <div style="border: 1px solid black; width: 300px; height: 650px">
+      <vvc-chat-vivocha [contactId]="contact.id"></vvc-chat-vivocha>
+    </div>
+    <div style="position: absolute; z-index: 2;left: 3px;right: 3px;bottom: 3px;top: 3px;"
+         *ngIf="appState[contact.id].onOffer">
+      <vvc-media-upgrade [offer]="appState[contact.id].lastOffer"
+                         (decline)="declineOffer($event, contact.id)"
+                         (accept)="acceptOffer($event, contact.id)"></vvc-media-upgrade>
+    </div>
+  </div>
+</div>
 <vvc-ad-core *ngIf="jwt"
              #adCore
              world="tevez"
