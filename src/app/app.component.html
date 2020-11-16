@@ -2,7 +2,27 @@
   start here {{title}}
 </div>
 
+<div *ngIf="agent">
+  <!--<vvc-avatar [url]="agent.avatar" size="large"></vvc-avatar>-->
+  <vvc-avatar [name]="agent.firstname + ' ' + agent.lastname" size="large"></vvc-avatar>
+</div>
+
+<div *ngFor="let contact of getPendingContacts()">
+  <div>
+    <span>{{contact.id}}</span> <button (click)="assignContact(contact.id)">assign</button>
+  </div>
+
+</div>
+
+<div *ngFor="let contact of getAssignedContacts()">
+  <div style="border: 1px solid black; width: 300px; height: 650px">
+    <vvc-chat-vivocha [contactId]="contact.id"></vvc-chat-vivocha>
+  </div>
+
+</div>
+
 <vvc-ad-core *ngIf="jwt"
+             #adCore
              world="tevez"
              acct="marchitos"
              [jwt]="jwt"
